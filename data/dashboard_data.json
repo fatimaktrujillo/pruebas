@@ -1,5 +1,5 @@
 {
-  "last_updated": "24/06/2026 18:16",
+  "last_updated": "24/06/2026 18:28",
   "seguimiento": [
     {
       "ambito": "Nacional",
@@ -3333,7 +3333,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3357,7 +3357,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3369,7 +3369,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3381,7 +3381,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "Sí",
-      "estado": "En coordinación",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3489,7 +3489,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3501,7 +3501,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3513,7 +3513,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3945,7 +3945,7 @@
       "tipo": "ONGs",
       "subtipo": "Foco en derechos de la niñez",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3957,7 +3957,7 @@
       "tipo": "ONGs",
       "subtipo": "Foco en protección de la violencia",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3993,7 +3993,7 @@
       "tipo": "Medios no tradicionales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -4005,7 +4005,7 @@
       "tipo": "Ministerio Público",
       "subtipo": "Direcciones especializadas en violencia",
       "contactado": "Sí",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -4017,7 +4017,7 @@
       "tipo": "Fin principal relacionado con temas del estudio",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -4053,7 +4053,7 @@
       "tipo": "Fin principal relacionado con temas del estudio",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -4065,7 +4065,7 @@
       "tipo": "Fin principal relacionado con temas del estudio",
       "subtipo": "No aplica",
       "contactado": "Sí",
-      "estado": "Rechazada",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -4077,7 +4077,7 @@
       "tipo": "Medios no tradicionales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -5077,19 +5077,19 @@
     }
   ],
   "estados": {
-    "Sin respuesta": 134,
-    "En coordinación": 11,
+    "Sin respuesta": 124,
+    "En coordinación": 10,
     "Aceptada": 2,
-    "Realizada completa": 37,
+    "Realizada completa": 52,
     "Realizada incompleta": 0,
-    "Rechazada": 10,
+    "Rechazada": 9,
     "No válida": 1,
-    "Total": 195,
-    "Cajamarca": 1
+    "Total": 198,
+    "Cajamarca": 2
   },
   "ambitos": {
     "En coordinación": {
-      "realizadas": 11,
+      "realizadas": 10,
       "meta": 0
     },
     "Aceptada": {
@@ -5097,7 +5097,7 @@
       "meta": 0
     },
     "Realizada completa": {
-      "realizadas": 37,
+      "realizadas": 52,
       "meta": 0
     },
     "Realizada incompleta": {
@@ -5105,7 +5105,7 @@
       "meta": 0
     },
     "Rechazada": {
-      "realizadas": 10,
+      "realizadas": 9,
       "meta": 0
     },
     "No válida": {
@@ -5113,15 +5113,15 @@
       "meta": 0
     },
     "Cajamarca": {
-      "realizadas": 1,
+      "realizadas": 2,
       "meta": 10
     },
     "Loreto": {
-      "realizadas": 4,
+      "realizadas": 5,
       "meta": 10
     },
     "Muestra nacional": {
-      "realizadas": 22,
+      "realizadas": 26,
       "meta": 20
     }
   }
