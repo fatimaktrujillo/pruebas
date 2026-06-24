@@ -1,5 +1,5 @@
 {
-  "last_updated": "24/06/2026 18:28",
+  "last_updated": "24/06/2026 18:30",
   "seguimiento": [
     {
       "ambito": "Nacional",
@@ -2517,7 +2517,7 @@
       "tipo": "ONGs",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2529,7 +2529,7 @@
       "tipo": "ONGs",
       "subtipo": "No aplica",
       "contactado": "Sí",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2661,7 +2661,7 @@
       "tipo": "Orientadoras Judiciales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2733,7 +2733,7 @@
       "tipo": "Orientadoras Judiciales",
       "subtipo": "No aplica",
       "contactado": "Sí",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2913,7 +2913,7 @@
       "tipo": "Orientadoras Judiciales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3033,7 +3033,7 @@
       "tipo": "Orientadoras Judiciales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -3153,7 +3153,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "Defensa Pública",
       "contactado": "Sí",
-      "estado": "En coordinación",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -5077,19 +5077,19 @@
     }
   ],
   "estados": {
-    "Sin respuesta": 124,
-    "En coordinación": 10,
+    "Sin respuesta": 122,
+    "En coordinación": 9,
     "Aceptada": 2,
-    "Realizada completa": 52,
+    "Realizada completa": 59,
     "Realizada incompleta": 0,
     "Rechazada": 9,
     "No válida": 1,
-    "Total": 198,
+    "Total": 202,
     "Cajamarca": 2
   },
   "ambitos": {
     "En coordinación": {
-      "realizadas": 10,
+      "realizadas": 9,
       "meta": 0
     },
     "Aceptada": {
@@ -5097,7 +5097,7 @@
       "meta": 0
     },
     "Realizada completa": {
-      "realizadas": 52,
+      "realizadas": 59,
       "meta": 0
     },
     "Realizada incompleta": {
@@ -5117,11 +5117,11 @@
       "meta": 10
     },
     "Loreto": {
-      "realizadas": 5,
+      "realizadas": 6,
       "meta": 10
     },
     "Muestra nacional": {
-      "realizadas": 26,
+      "realizadas": 27,
       "meta": 20
     }
   }
