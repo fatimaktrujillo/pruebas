@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-EXCEL_PATH  = os.path.join(SCRIPT_DIR, "..", "APOYO Consultoría - Seguimiento.xlsx")
+EXCEL_PATH  = os.path.join(SCRIPT_DIR, "..", "Prueba - APOYO Consultoría - Seguimiento.xlsx")
 OUTPUT_PATH = os.path.join(SCRIPT_DIR, "data", "dashboard_data.json")
 
 def ss(v):
