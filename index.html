@@ -7,9 +7,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
-    --azul:  #1a4f8a; --azul2: #2563be; --verde: #16a34a;
-    --rojo:  #dc2626; --naranja: #ea580c; --gris: #64748b;
-    --fondo: #f0f4f8; --borde: #dde3ec; --texto: #1e293b; --texto2: #475569;
+    --azul:  #3d3d3d; --azul2: #555555; --verde: #5a7a5a;
+    --rojo:  #8a3a3a; --naranja: #7a6040; --gris: #6b7280;
+    --fondo: #f2f2f2; --borde: #d1d1d1; --texto: #1f1f1f; --texto2: #555555;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
@@ -18,7 +18,7 @@
   #login-screen {
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #1a4f8a 0%, #2563be 60%, #1e40af 100%);
+    background: linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 60%, #3a3a3a 100%);
   }
   .login-card {
     background: #fff; border-radius: 16px; padding: 48px 40px;
@@ -27,7 +27,7 @@
   .login-logo { width:64px; height:64px; background:var(--azul); border-radius:12px;
     display:flex; align-items:center; justify-content:center; margin:0 auto 20px; }
   .login-logo svg { width:36px; height:36px; fill:#fff; }
-  .login-card h1 { font-size:1.4rem; color:var(--azul); margin-bottom:4px; }
+  .login-card h1 { font-size:1.4rem; color:var(--texto); margin-bottom:4px; }
   .login-card p  { font-size:.85rem; color:var(--gris); margin-bottom:28px; }
   .login-card label { display:block; text-align:left; font-size:.82rem; font-weight:600; color:var(--texto2); margin-bottom:6px; }
   .login-card input {
@@ -240,8 +240,8 @@ function showTab(id, el) {
 }
 
 // ── UTILS ───────────────────────────────────────────────────────────────────
-const PAL = ["#1a4f8a","#2563be","#16a34a","#ea580c","#7c3aed","#0891b2","#b45309","#be185d","#059669","#d97706"];
-const ECOL = {"Realizada completa":"#16a34a","Aceptada":"#2563be","En coordinación":"#ea580c","Sin respuesta":"#94a3b8","sin respuesta":"#94a3b8","Rechazada":"#dc2626","No válida":"#9ca3af"};
+const PAL = ["#3d3d3d","#6b6b6b","#5a7a5a","#7a6040","#7a5a7a","#3a6a6a","#6a5a3a","#7a3a5a","#4a6a4a","#8a7050"];
+const ECOL = {"Realizada completa":"#5a7a5a","Aceptada":"#4a6a8a","En coordinación":"#8a7050","Sin respuesta":"#b0b0b0","sin respuesta":"#b0b0b0","Rechazada":"#8a3a3a","No válida":"#a0a0a0"};
 
 const charts = {};
 function mkChart(id, type, labels, datasets, extra={}) {
@@ -314,8 +314,8 @@ function renderEnt(seg, ent) {
   });
   const ambitKeys = Object.keys(AMBIT_META);
   mkChart("ch-ambito","bar",ambitKeys,[
-    {label:"Realizadas", data:ambitKeys.map(k=>ambitReal[k]||0), backgroundColor:"#16a34a", borderRadius:4},
-    {label:"Meta",       data:ambitKeys.map(k=>AMBIT_META[k]||0), backgroundColor:"#dbeafe", borderRadius:4}
+    {label:"Realizadas", data:ambitKeys.map(k=>ambitReal[k]||0), backgroundColor:"#5a7a5a", borderRadius:4},
+    {label:"Meta",       data:ambitKeys.map(k=>AMBIT_META[k]||0), backgroundColor:"#d4d4d4", borderRadius:4}
   ]);
 
   // Bar contactos por ámbito (total)
@@ -355,7 +355,7 @@ function renderGF(grupos) {
 
   mkChart("ch-asist","doughnut",["Asistió","No asistió","Pendiente"],[{
     data:[asistio,noAsist,pend],
-    backgroundColor:["#16a34a","#dc2626","#94a3b8"],borderWidth:2,borderColor:"#fff"
+    backgroundColor:["#5a7a5a","#8a3a3a","#b0b0b0"],borderWidth:2,borderColor:"#fff"
   }]);
 
   const tipoMap = groupBy(grupos,"tipo_gf");
@@ -371,7 +371,7 @@ function renderGF(grupos) {
   // Tabla
   let html = `<thead><tr><th>#</th><th>Nombre</th><th>Institución</th><th>Tipo</th><th>Distrito</th><th>Asistencia</th></tr></thead><tbody>`;
   grupos.forEach((r,i) => {
-    const color = r.asistencia==="Asistió"?"color:#16a34a" : r.asistencia==="No asistió"?"color:#dc2626":"color:#94a3b8";
+    const color = r.asistencia==="Asistió"?"color:#5a7a5a" : r.asistencia==="No asistió"?"color:#8a3a3a":"color:#9a9a9a";
     html += `<tr><td>${i+1}</td><td>${r.nombre||"—"}</td><td>${r.institucion||"—"}</td><td style="font-size:.75rem">${r.tipo_gf||"—"}</td><td>${r.distrito||"—"}</td><td style="${color};font-weight:600">${r.asistencia||"Pendiente"}</td></tr>`;
   });
   html += "</tbody>";
