@@ -1,5 +1,5 @@
 {
-  "last_updated": "25/06/2026 10:44",
+  "last_updated": "25/06/2026 17:00",
   "seguimiento": [
     {
       "ambito": "Nacional",
@@ -2109,7 +2109,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2121,7 +2121,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2133,7 +2133,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2145,7 +2145,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2157,7 +2157,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2169,7 +2169,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2181,7 +2181,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2193,7 +2193,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2205,7 +2205,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2217,7 +2217,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "Sí",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -5077,15 +5077,15 @@
     }
   ],
   "estados": {
-    "Sin respuesta": 121,
+    "Sin respuesta": 120,
     "En coordinación": 9,
     "Aceptada": 1,
-    "Realizada completa": 65,
+    "Realizada completa": 75,
     "Realizada incompleta": 0,
     "Rechazada": 8,
     "No válida": 1,
-    "Total": 205,
-    "Cajamarca": 2
+    "Total": 214,
+    "Cajamarca": 5
   },
   "ambitos": {
     "En coordinación": {
@@ -5097,7 +5097,7 @@
       "meta": 0
     },
     "Realizada completa": {
-      "realizadas": 65,
+      "realizadas": 75,
       "meta": 0
     },
     "Realizada incompleta": {
@@ -5113,7 +5113,7 @@
       "meta": 0
     },
     "Cajamarca": {
-      "realizadas": 2,
+      "realizadas": 5,
       "meta": 10
     },
     "Loreto": {
