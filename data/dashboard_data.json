@@ -1,5 +1,5 @@
 {
-  "last_updated": "24/06/2026 18:30",
+  "last_updated": "25/06/2026 10:44",
   "seguimiento": [
     {
       "ambito": "Nacional",
@@ -2445,7 +2445,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "Sí",
-      "estado": "Sin respuesta",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2457,7 +2457,7 @@
       "tipo": "Instituciones Públicas",
       "subtipo": "CEM / Aurora",
       "contactado": "Sí",
-      "estado": "Rechazada",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2469,7 +2469,7 @@
       "tipo": "ONGs",
       "subtipo": "No aplica",
       "contactado": "Sí",
-      "estado": "Aceptada",
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2481,7 +2481,7 @@
       "tipo": "Asociaciones legales",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2493,7 +2493,7 @@
       "tipo": "ONGs",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -2505,7 +2505,7 @@
       "tipo": "ONGs",
       "subtipo": "No aplica",
       "contactado": "No",
-      "estado": null,
+      "estado": "Realizada completa",
       "modalidad": null,
       "duracion": null
     },
@@ -5077,14 +5077,14 @@
     }
   ],
   "estados": {
-    "Sin respuesta": 122,
+    "Sin respuesta": 121,
     "En coordinación": 9,
-    "Aceptada": 2,
-    "Realizada completa": 59,
+    "Aceptada": 1,
+    "Realizada completa": 65,
     "Realizada incompleta": 0,
-    "Rechazada": 9,
+    "Rechazada": 8,
     "No válida": 1,
-    "Total": 202,
+    "Total": 205,
     "Cajamarca": 2
   },
   "ambitos": {
@@ -5093,11 +5093,11 @@
       "meta": 0
     },
     "Aceptada": {
-      "realizadas": 2,
+      "realizadas": 1,
       "meta": 0
     },
     "Realizada completa": {
-      "realizadas": 59,
+      "realizadas": 65,
       "meta": 0
     },
     "Realizada incompleta": {
@@ -5105,7 +5105,7 @@
       "meta": 0
     },
     "Rechazada": {
-      "realizadas": 9,
+      "realizadas": 8,
       "meta": 0
     },
     "No válida": {
@@ -5117,11 +5117,11 @@
       "meta": 10
     },
     "Loreto": {
-      "realizadas": 6,
+      "realizadas": 7,
       "meta": 10
     },
     "Muestra nacional": {
-      "realizadas": 27,
+      "realizadas": 31,
       "meta": 20
     }
   }
