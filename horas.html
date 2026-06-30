@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Horas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --azul:    #3d3d3d;
+    --azul2:   #555555;
+    --verde:   #2d6a4f;
+    --rojo:    #c62828;
+    --rojo2:   #ffebee;
+    --naranja: #e65100;
+    --gris:    #6b7280;
+    --fondo:   #f2f2f2;
+    --borde:   #d1d1d1;
+    --texto:   #1f1f1f;
+    --texto2:  #555555;
+    --blanco:  #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
+
+  header {
+    background: var(--azul); color: #fff; padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h1 { font-size: 1.1rem; font-weight: 600; }
+  header span { font-size: .8rem; opacity: .7; }
+
+  .tabs {
+    background: var(--blanco); border-bottom: 2px solid var(--borde);
+    display: flex; padding: 0 32px; gap: 4px;
+  }
+  .tab-btn {
+    padding: 12px 20px; font-size: .88rem; font-weight: 600;
+    background: none; border: none; cursor: pointer; color: var(--gris);
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: all .15s;
+  }
+  .tab-btn.active { color: var(--azul); border-bottom-color: var(--azul); }
+  .tab-btn:hover:not(.active) { color: var(--texto2); }
+
+  .tab-content { display: none; padding: 28px 32px; }
+  .tab-content.active { display: block; }
+
+  .filtros {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    margin-bottom: 20px;
+  }
+  .filtros label { font-size: .82rem; font-weight: 600; color: var(--texto2); }
+  .filtros select {
+    padding: 7px 12px; border: 1.5px solid var(--borde); border-radius: 8px;
+    font-size: .88rem; background: var(--blanco); color: var(--texto); min-width: 160px;
+  }
+
+  .tabla-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse; background: var(--blanco);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    font-size: .85rem;
+  }
+  thead tr { background: var(--azul); color: #fff; }
+  thead th { padding: 11px 14px; text-align: left; font-weight: 600; white-space: nowrap; }
+  thead th:not(:first-child) { text-align: center; }
+  tbody tr:nth-child(even) { background: #f8f8f8; }
+  tbody tr:hover { background: #eef0f3; }
+  tbody td { padding: 9px 14px; border-bottom: 1px solid #ececec; }
+  tbody td:not(:first-child) { text-align: center; font-weight: 500; }
+  .persona-cell { font-weight: 600; }
+
+  .horas-ok    { color: var(--verde); }
+  .horas-warn  { background: #fff3e0 !important; color: var(--naranja); font-weight: 700; }
+  .horas-alert { background: var(--rojo2) !important; color: var(--rojo); font-weight: 700; }
+  .horas-alert::after { content: ' ⚠'; }
+  .total-row { background: #e8eaf0 !important; font-weight: 700; }
+
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .card {
+    background: var(--blanco); border-radius: 10px; padding: 18px 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08); min-width: 160px; flex: 1;
+  }
+  .card .label { font-size: .78rem; color: var(--gris); font-weight: 600; margin-bottom: 6px; }
+  .card .value { font-size: 1.8rem; font-weight: 700; color: var(--azul); }
+  .card.alerta .value { color: var(--rojo); }
+
+  .chart-wrap {
+    background: var(--blanco); border-radius: 10px;
+    padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 24px;
+  }
+  .chart-wrap h3 { font-size: .95rem; color: var(--texto2); margin-bottom: 16px; }
+  canvas { max-height: 380px; }
+
+  .seccion-titulo { font-size: .95rem; font-weight: 700; color: var(--texto2); margin: 24px 0 12px; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: .75rem; font-weight: 600; }
+  .badge-af  { background: #e3f2fd; color: #1565c0; }
+  .badge-p   { background: #e8f5e9; color: #2e7d32; }
+  .badge-t   { background: #fff8e1; color: #f57f17; }
+  .badge-gen { background: #f3e5f5; color: #6a1b9a; }
+
+  .error-msg { background: var(--rojo2); color: var(--rojo); padding: 16px 20px; border-radius: 8px; font-weight: 600; }
+  footer { text-align: center; padding: 20px; font-size: .78rem; color: var(--gris); border-top: 1px solid var(--borde); margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 Dashboard de Horas — Apoyo Consultoría</h1>
+  <span id="lbl-actualizacion">Cargando...</span>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('semanas')">Horas por Persona y Semana</button>
+  <button class="tab-btn"        onclick="showTab('proyectos')">Horas por Proyecto</button>
+</div>
+
+<div id="tab-semanas" class="tab-content active">
+  <div class="filtros">
+    <label>Persona:</label>
+    <select id="fil-persona" onchange="renderSemanas()"><option value="">Todas</option></select>
+    <label>Semana:</label>
+    <select id="fil-semana" onchange="renderSemanas()"><option value="">Todas</option></select>
+  </div>
+  <div class="cards" id="cards-semanas"></div>
+  <div class="tabla-wrap">
+    <table id="tbl-semanas"><thead></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div id="tab-proyectos" class="tab-content">
+  <div class="filtros">
+    <label>Persona:</label>
+    <select id="fil-persona-proy" onchange="renderProyectos()"><option value="">Todas</option></select>
+    <label>Tipo:</label>
+    <select id="fil-tipo-proy" onchange="renderProyectos()">
+      <option value="">Todos</option>
+      <option value="P">Proyecto</option>
+      <option value="T">Propuesta</option>
+      <option value="AF">Act. Fijas</option>
+      <option value="O">Originación</option>
+    </select>
+  </div>
+  <div class="chart-wrap">
+    <h3>Total de horas por proyecto (Top 20)</h3>
+    <canvas id="chart-proyectos"></canvas>
+  </div>
+  <div class="seccion-titulo">Detalle por proyecto</div>
+  <div class="tabla-wrap">
+    <table id="tbl-proyectos"><thead></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<footer id="footer-txt">Dashboard de Horas · Apoyo Consultoría</footer>
+
+<script>
+let DATA = [];
+let chartProyectos = null;
+
+async function cargarDatos() {
+  const ahora = new Date();
+  const mes   = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+  const urls  = [`data/horas_${mes}.json`, `data/horas_latest.json`];
+  for (const url of urls) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) continue;
+      const json = await r.json();
+      DATA = json.datos || json;
+      document.getElementById('lbl-actualizacion').textContent =
+        `Mes: ${json.mes || mes} · ${json.total_filas || DATA.length} registros`;
+      document.getElementById('footer-txt').textContent =
+        `Última actualización: ${json.fecha_desde || ''} – ${json.fecha_hasta || ''} · Apoyo Consultoría`;
+      return true;
+    } catch(e) {}
+  }
+  return false;
+}
+
+function getSemana(fechaStr) {
+  const [d] = fechaStr.split('/').map(Number);
+  if (d <= 7)  return 'Sem 1 (1-7)';
+  if (d <= 14) return 'Sem 2 (8-14)';
+  if (d <= 21) return 'Sem 3 (15-21)';
+  if (d <= 28) return 'Sem 4 (22-28)';
+  return 'Sem 5 (29+)';
+}
+
+function renderSemanas() {
+  const filPersona = document.getElementById('fil-persona').value;
+  const filSemana  = document.getElementById('fil-semana').value;
+  const mapa = {};
+  for (const f of DATA) {
+    if (filPersona && (f.IdResponsable||'').trim() !== filPersona) continue;
+    const sem = getSemana(f.Fecha);
+    if (filSemana && sem !== filSemana) continue;
+    const p = (f.IdResponsable || '').trim();
+    if (!mapa[p]) mapa[p] = {};
+    mapa[p][sem] = (mapa[p][sem] || 0) + (f.HoraMinuto || 0);
+  }
+  const semOrden = ['Sem 1 (1-7)','Sem 2 (8-14)','Sem 3 (15-21)','Sem 4 (22-28)','Sem 5 (29+)'];
+  const semsPresentes = filSemana ? [filSemana]
+    : semOrden.filter(s => Object.values(mapa).some(m => (m[s]||0) > 0));
+
+  document.querySelector('#tbl-semanas thead').innerHTML = `<tr>
+    <th>Persona</th>${semsPresentes.map(s=>`<th>${s}</th>`).join('')}<th>Total mes</th></tr>`;
+
+  let nAlertas = 0, totalGeneral = 0;
+  const rows = Object.entries(mapa).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  document.querySelector('#tbl-semanas tbody').innerHTML = rows.map(([persona, sems]) => {
+    const horasPorSem = semsPresentes.map(s => sems[s] || 0);
+    const total = horasPorSem.reduce((a,b)=>a+b, 0);
+    totalGeneral += total;
+    const celdas = horasPorSem.map(h => {
+      let cls = h > 0 ? 'horas-ok' : '';
+      if (h > 48) { cls = 'horas-alert'; nAlertas++; }
+      else if (h > 40) cls = 'horas-warn';
+      return `<td class="${cls}">${h > 0 ? h.toFixed(1) : '-'}</td>`;
+    });
+    return `<tr><td class="persona-cell">${persona}</td>${celdas.join('')}<td><strong>${total.toFixed(1)}</strong></td></tr>`;
+  }).join('') + (()=>{
+    const tots = semsPresentes.map(s=>rows.reduce((a,[,m])=>a+(m[s]||0),0));
+    return `<tr class="total-row"><td>TOTAL</td>${tots.map(h=>`<td>${h.toFixed(1)}</td>`).join('')}<td>${totalGeneral.toFixed(1)}</td></tr>`;
+  })();
+
+  document.getElementById('cards-semanas').innerHTML = `
+    <div class="card"><div class="label">Total horas del mes</div><div class="value">${totalGeneral.toFixed(1)}</div></div>
+    <div class="card"><div class="label">Personas</div><div class="value">${rows.length}</div></div>
+    <div class="card ${nAlertas>0?'alerta':''}"><div class="label">Alertas &gt;48h/semana</div><div class="value">${nAlertas}</div></div>`;
+}
+
+function renderProyectos() {
+  const filPersona = document.getElementById('fil-persona-proy').value;
+  const filTipo    = document.getElementById('fil-tipo-proy').value;
+  const mapa = {};
+  for (const f of DATA) {
+    if (filPersona && (f.IdResponsable||'').trim() !== filPersona) continue;
+    if (filTipo    && f.TipoActividad !== filTipo) continue;
+    const key = f.Codigo || '(sin código)';
+    if (!mapa[key]) mapa[key] = { nombre: f.Nombre||key, tipo: f.TipoActividad, horas: 0, personas: new Set() };
+    mapa[key].horas += (f.HoraMinuto || 0);
+    mapa[key].personas.add((f.IdResponsable||'').trim());
+  }
+  const orden = Object.entries(mapa).sort((a,b)=>b[1].horas-a[1].horas);
+  const top20 = orden.slice(0,20);
+  const COLORS = { P:'#40916c', T:'#f57f17', AF:'#1565c0' };
+
+  if (chartProyectos) chartProyectos.destroy();
+  chartProyectos = new Chart(document.getElementById('chart-proyectos'), {
+    type: 'bar',
+    data: {
+      labels: top20.map(([c])=>c),
+      datasets: [{ label:'Horas', data: top20.map(([,v])=>+v.horas.toFixed(1)),
+        backgroundColor: top20.map(([,v])=>COLORS[v.tipo]||'#6a1b9a'), borderRadius:4 }]
+    },
+    options: { indexAxis:'y', plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true, title:{display:true,text:'Horas'}}} }
+  });
+
+  const BADGE = { P:'badge-p', T:'badge-t', AF:'badge-af' };
+  const LABEL = { P:'Proyecto', T:'Propuesta', AF:'Act. Fijas', O:'Orig.', E:'EOI', C:'Cotiz.' };
+  document.querySelector('#tbl-proyectos thead').innerHTML =
+    `<tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Personas</th><th>Horas totales</th></tr>`;
+  document.querySelector('#tbl-proyectos tbody').innerHTML = orden.map(([cod,v])=>`
+    <tr>
+      <td><strong>${cod}</strong></td><td>${v.nombre}</td>
+      <td><span class="badge ${BADGE[v.tipo]||'badge-gen'}">${LABEL[v.tipo]||v.tipo||'—'}</span></td>
+      <td>${v.personas.size}</td><td><strong>${v.horas.toFixed(1)}</strong></td>
+    </tr>`).join('');
+}
+
+function poblarFiltros() {
+  const personas = [...new Set(DATA.map(f=>(f.IdResponsable||'').trim()))].sort();
+  const semanas  = ['Sem 1 (1-7)','Sem 2 (8-14)','Sem 3 (15-21)','Sem 4 (22-28)','Sem 5 (29+)']
+    .filter(s => DATA.some(f=>getSemana(f.Fecha)===s));
+  ['fil-persona','fil-persona-proy'].forEach(id => {
+    document.getElementById(id).innerHTML = '<option value="">Todas</option>' +
+      personas.map(p=>`<option value="${p}">${p}</option>`).join('');
+  });
+  document.getElementById('fil-semana').innerHTML = '<option value="">Todas</option>' +
+    semanas.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelector(`[onclick="showTab('${name}')"]`).classList.add('active');
+}
+
+(async () => {
+  const ok = await cargarDatos();
+  if (!ok) {
+    document.querySelector('.tab-content.active').innerHTML =
+      `<div class="error-msg">No se encontró el archivo de datos.<br>Corre descargar_horas.py y copia el JSON a la carpeta data/.</div>`;
+    return;
+  }
+  poblarFiltros(); renderSemanas(); renderProyectos();
+})();
+</script>
+</body>
+</html>
