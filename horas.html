@@ -7,18 +7,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
-    --azul:    #3d3d3d;
-    --azul2:   #555555;
-    --verde:   #2d6a4f;
-    --rojo:    #c62828;
-    --rojo2:   #ffebee;
-    --naranja: #e65100;
-    --gris:    #6b7280;
-    --fondo:   #f2f2f2;
-    --borde:   #d1d1d1;
-    --texto:   #1f1f1f;
-    --texto2:  #555555;
-    --blanco:  #ffffff;
+    --azul:    #3d3d3d; --azul2: #555;
+    --verde:   #2d6a4f; --verde-claro: #d8f3dc;
+    --rojo:    #c62828; --rojo2: #ffebee;
+    --naranja: #e65100; --naranja2: #fff3e0;
+    --gris:    #6b7280; --fondo: #f2f2f2;
+    --borde:   #d1d1d1; --texto: #1f1f1f; --texto2: #555;
+    --blanco:  #fff;
+    --plan:    #7986cb;  /* morado para planificado */
+    --real:    #4db6ac;  /* verde-azul para real    */
+    --alerta:  #ef5350;  /* rojo para alertas       */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--fondo); color: var(--texto); }
@@ -26,7 +24,7 @@
   header {
     background: var(--azul); color: #fff; padding: 14px 32px;
     display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.2);
   }
   header h1 { font-size: 1.1rem; font-weight: 600; }
   header span { font-size: .8rem; opacity: .7; }
@@ -38,99 +36,123 @@
   .tab-btn {
     padding: 12px 20px; font-size: .88rem; font-weight: 600;
     background: none; border: none; cursor: pointer; color: var(--gris);
-    border-bottom: 3px solid transparent; margin-bottom: -2px;
-    transition: all .15s;
+    border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all .15s;
   }
   .tab-btn.active { color: var(--azul); border-bottom-color: var(--azul); }
-  .tab-btn:hover:not(.active) { color: var(--texto2); }
 
-  .tab-content { display: none; padding: 28px 32px; }
+  .tab-content { display: none; padding: 24px 32px; }
   .tab-content.active { display: block; }
 
-  .filtros {
-    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-    margin-bottom: 20px;
-  }
+  /* FILTROS */
+  .filtros { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
   .filtros label { font-size: .82rem; font-weight: 600; color: var(--texto2); }
   .filtros select {
     padding: 7px 12px; border: 1.5px solid var(--borde); border-radius: 8px;
-    font-size: .88rem; background: var(--blanco); color: var(--texto); min-width: 160px;
+    font-size: .88rem; background: var(--blanco); color: var(--texto); min-width: 150px;
   }
 
-  .tabla-wrap { overflow-x: auto; }
-  table {
-    width: 100%; border-collapse: collapse; background: var(--blanco);
-    border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08);
-    font-size: .85rem;
+  /* CARDS */
+  .cards { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+  .card {
+    background: var(--blanco); border-radius: 10px; padding: 16px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08); min-width: 140px; flex: 1;
+    border-left: 4px solid var(--borde);
   }
+  .card .label { font-size: .76rem; color: var(--gris); font-weight: 600; margin-bottom: 5px; }
+  .card .value { font-size: 1.7rem; font-weight: 700; color: var(--azul); }
+  .card.alerta { border-left-color: var(--alerta); }
+  .card.alerta .value { color: var(--alerta); }
+  .card.ok { border-left-color: var(--real); }
+
+  /* LEYENDA */
+  .leyenda { display: flex; gap: 18px; margin-bottom: 14px; font-size: .82rem; font-weight: 600; }
+  .leyenda span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 3px; }
+  .dot-plan  { background: var(--plan); }
+  .dot-real  { background: var(--real); }
+  .dot-alert { background: var(--alerta); }
+
+  /* CHARTS */
+  .chart-box {
+    background: var(--blanco); border-radius: 10px; padding: 20px 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px;
+  }
+  .chart-box h3 { font-size: .9rem; font-weight: 700; color: var(--texto2); margin-bottom: 14px; }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+  canvas { max-height: 340px; }
+
+  /* TABLA */
+  .tabla-wrap { overflow-x: auto; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; background: var(--blanco);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08); font-size: .84rem; }
   thead tr { background: var(--azul); color: #fff; }
-  thead th { padding: 11px 14px; text-align: left; font-weight: 600; white-space: nowrap; }
+  thead th { padding: 10px 13px; text-align: left; font-weight: 600; white-space: nowrap; }
   thead th:not(:first-child) { text-align: center; }
   tbody tr:nth-child(even) { background: #f8f8f8; }
   tbody tr:hover { background: #eef0f3; }
-  tbody td { padding: 9px 14px; border-bottom: 1px solid #ececec; }
+  tbody td { padding: 8px 13px; border-bottom: 1px solid #ececec; }
   tbody td:not(:first-child) { text-align: center; font-weight: 500; }
-  .persona-cell { font-weight: 600; }
-
-  .horas-ok    { color: var(--verde); }
-  .horas-warn  { background: #fff3e0 !important; color: var(--naranja); font-weight: 700; }
-  .horas-alert { background: var(--rojo2) !important; color: var(--rojo); font-weight: 700; }
-  .horas-alert::after { content: ' ⚠'; }
   .total-row { background: #e8eaf0 !important; font-weight: 700; }
 
-  .cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
-  .card {
-    background: var(--blanco); border-radius: 10px; padding: 18px 22px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.08); min-width: 160px; flex: 1;
-  }
-  .card .label { font-size: .78rem; color: var(--gris); font-weight: 600; margin-bottom: 6px; }
-  .card .value { font-size: 1.8rem; font-weight: 700; color: var(--azul); }
-  .card.alerta .value { color: var(--rojo); }
-
-  .chart-wrap {
-    background: var(--blanco); border-radius: 10px;
-    padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 24px;
-  }
-  .chart-wrap h3 { font-size: .95rem; color: var(--texto2); margin-bottom: 16px; }
-  canvas { max-height: 380px; }
-
-  .seccion-titulo { font-size: .95rem; font-weight: 700; color: var(--texto2); margin: 24px 0 12px; }
-
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: .75rem; font-weight: 600; }
-  .badge-af  { background: #e3f2fd; color: #1565c0; }
-  .badge-p   { background: #e8f5e9; color: #2e7d32; }
-  .badge-t   { background: #fff8e1; color: #f57f17; }
-  .badge-gen { background: #f3e5f5; color: #6a1b9a; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: .74rem; font-weight: 700; }
+  .pill-ok     { background: #e8f5e9; color: #2e7d32; }
+  .pill-warn   { background: #fff3e0; color: #e65100; }
+  .pill-alert  { background: #ffebee; color: #c62828; }
+  .pill-tipo-p  { background: #e8f5e9; color: #1b5e20; }
+  .pill-tipo-af { background: #e3f2fd; color: #0d47a1; }
+  .pill-tipo-t  { background: #fff8e1; color: #f57f17; }
+  .pill-tipo-o  { background: #f3e5f5; color: #6a1b9a; }
 
   .error-msg { background: var(--rojo2); color: var(--rojo); padding: 16px 20px; border-radius: 8px; font-weight: 600; }
-  footer { text-align: center; padding: 20px; font-size: .78rem; color: var(--gris); border-top: 1px solid var(--borde); margin-top: 20px; }
+  footer { text-align: center; padding: 18px; font-size: .77rem; color: var(--gris); border-top: 1px solid var(--borde); margin-top: 10px; }
+
+  @media (max-width: 700px) { .chart-row { grid-template-columns: 1fr; } .tab-content { padding: 16px; } }
 </style>
 </head>
 <body>
 
 <header>
   <h1>📊 Dashboard de Horas — Apoyo Consultoría</h1>
-  <span id="lbl-actualizacion">Cargando...</span>
+  <span id="lbl-act">Cargando...</span>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('semanas')">Horas por Persona y Semana</button>
-  <button class="tab-btn"        onclick="showTab('proyectos')">Horas por Proyecto</button>
+  <button class="tab-btn active" onclick="showTab('semanas')">Por Persona y Semana</button>
+  <button class="tab-btn"        onclick="showTab('proyectos')">Por Proyecto</button>
 </div>
 
+<!-- TAB 1: SEMANAS -->
 <div id="tab-semanas" class="tab-content active">
   <div class="filtros">
     <label>Persona:</label>
     <select id="fil-persona" onchange="renderSemanas()"><option value="">Todas</option></select>
-    <label>Semana:</label>
-    <select id="fil-semana" onchange="renderSemanas()"><option value="">Todas</option></select>
   </div>
-  <div class="cards" id="cards-semanas"></div>
+  <div class="cards" id="cards-sem"></div>
+  <div class="leyenda">
+    <span><span class="dot dot-plan"></span>Planificado</span>
+    <span><span class="dot dot-real"></span>Real</span>
+    <span><span class="dot dot-alert"></span>Alerta &gt;48h</span>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <h3>Horas por persona (total mes)</h3>
+      <canvas id="chart-personas"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Horas por semana (todas las personas)</h3>
+      <canvas id="chart-semanas"></canvas>
+    </div>
+  </div>
+  <div class="chart-box">
+    <h3>Horas por persona y semana — detalle</h3>
+    <canvas id="chart-persona-sem"></canvas>
+  </div>
   <div class="tabla-wrap">
     <table id="tbl-semanas"><thead></thead><tbody></tbody></table>
   </div>
 </div>
 
+<!-- TAB 2: PROYECTOS -->
 <div id="tab-proyectos" class="tab-content">
   <div class="filtros">
     <label>Persona:</label>
@@ -144,11 +166,25 @@
       <option value="O">Originación</option>
     </select>
   </div>
-  <div class="chart-wrap">
-    <h3>Total de horas por proyecto (Top 20)</h3>
-    <canvas id="chart-proyectos"></canvas>
+  <div class="cards" id="cards-proy"></div>
+  <div class="leyenda">
+    <span><span class="dot dot-plan"></span>Planificado</span>
+    <span><span class="dot dot-real"></span>Real</span>
   </div>
-  <div class="seccion-titulo">Detalle por proyecto</div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <h3>Top 15 proyectos por horas (planificado vs real)</h3>
+      <canvas id="chart-proy-top"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Distribución por tipo de actividad</h3>
+      <canvas id="chart-proy-tipo"></canvas>
+    </div>
+  </div>
+  <div class="chart-box">
+    <h3>Horas reales por proyecto — desglose por persona (Top 10)</h3>
+    <canvas id="chart-proy-persona"></canvas>
+  </div>
   <div class="tabla-wrap">
     <table id="tbl-proyectos"><thead></thead><tbody></tbody></table>
   </div>
@@ -158,131 +194,250 @@
 
 <script>
 let DATA = [];
-let chartProyectos = null;
+const charts = {};
 
+// ── COLORES ────────────────────────────────────────────────────────────────────
+const C_PLAN  = 'rgba(121,134,203,0.85)';
+const C_REAL  = 'rgba(77,182,172,0.85)';
+const C_ALERT = 'rgba(239,83,80,0.85)';
+const PALETTE = ['#4db6ac','#7986cb','#f06292','#ffb74d','#aed581','#4fc3f7',
+                 '#ff8a65','#9575cd','#4dd0e1','#dce775','#a1887f','#90a4ae',
+                 '#f48fb1','#80cbc4','#ce93d8','#ffe082','#ef9a9a','#80deea'];
+
+// ── CARGA DATOS ────────────────────────────────────────────────────────────────
 async function cargarDatos() {
   const ahora = new Date();
-  const mes   = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
-  const urls  = [`data/horas_${mes}.json`, `data/horas_latest.json`];
-  for (const url of urls) {
+  const mes = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+  for (const url of [`data/horas_${mes}.json`, `data/horas_latest.json`]) {
     try {
-      const r = await fetch(url);
-      if (!r.ok) continue;
-      const json = await r.json();
-      DATA = json.datos || json;
-      document.getElementById('lbl-actualizacion').textContent =
-        `Mes: ${json.mes || mes} · ${json.total_filas || DATA.length} registros`;
-      document.getElementById('footer-txt').textContent =
-        `Última actualización: ${json.fecha_desde || ''} – ${json.fecha_hasta || ''} · Apoyo Consultoría`;
+      const r = await fetch(url); if (!r.ok) continue;
+      const j = await r.json();
+      DATA = j.datos || j;
+      document.getElementById('lbl-act').textContent = `Mes: ${j.mes||mes} · ${j.total_filas||DATA.length} registros`;
+      document.getElementById('footer-txt').textContent = `Última actualización: ${j.fecha_desde||''} – ${j.fecha_hasta||''} · Apoyo Consultoría`;
       return true;
     } catch(e) {}
   }
   return false;
 }
 
-function getSemana(fechaStr) {
-  const [d] = fechaStr.split('/').map(Number);
-  if (d <= 7)  return 'Sem 1 (1-7)';
-  if (d <= 14) return 'Sem 2 (8-14)';
-  if (d <= 21) return 'Sem 3 (15-21)';
-  if (d <= 28) return 'Sem 4 (22-28)';
-  return 'Sem 5 (29+)';
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function getSemana(f) {
+  const d = +f.split('/')[0];
+  if (d<=7)  return 'Sem 1\n(1-7)';
+  if (d<=14) return 'Sem 2\n(8-14)';
+  if (d<=21) return 'Sem 3\n(15-21)';
+  if (d<=28) return 'Sem 4\n(22-28)';
+  return 'Sem 5\n(29+)';
+}
+function mkChart(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), cfg);
+}
+function filtrar(filPersona, filTipo) {
+  return DATA.filter(f =>
+    (!filPersona || (f.IdResponsable||'').trim()===filPersona) &&
+    (!filTipo    || f.TipoActividad===filTipo)
+  );
 }
 
+// ── TAB 1: SEMANAS ─────────────────────────────────────────────────────────────
 function renderSemanas() {
-  const filPersona = document.getElementById('fil-persona').value;
-  const filSemana  = document.getElementById('fil-semana').value;
-  const mapa = {};
-  for (const f of DATA) {
-    if (filPersona && (f.IdResponsable||'').trim() !== filPersona) continue;
-    const sem = getSemana(f.Fecha);
-    if (filSemana && sem !== filSemana) continue;
-    const p = (f.IdResponsable || '').trim();
-    if (!mapa[p]) mapa[p] = {};
-    mapa[p][sem] = (mapa[p][sem] || 0) + (f.HoraMinuto || 0);
+  const filP = document.getElementById('fil-persona').value;
+  const rows = filtrar(filP, '');
+
+  // mapa persona → semana → horas
+  const mapaPS = {};
+  for (const f of rows) {
+    const p = (f.IdResponsable||'').trim();
+    const s = getSemana(f.Fecha);
+    if (!mapaPS[p]) mapaPS[p] = {};
+    mapaPS[p][s] = (mapaPS[p][s]||0) + (f.HoraMinuto||0);
   }
-  const semOrden = ['Sem 1 (1-7)','Sem 2 (8-14)','Sem 3 (15-21)','Sem 4 (22-28)','Sem 5 (29+)'];
-  const semsPresentes = filSemana ? [filSemana]
-    : semOrden.filter(s => Object.values(mapa).some(m => (m[s]||0) > 0));
 
-  document.querySelector('#tbl-semanas thead').innerHTML = `<tr>
-    <th>Persona</th>${semsPresentes.map(s=>`<th>${s}</th>`).join('')}<th>Total mes</th></tr>`;
+  const semOrden = ['Sem 1\n(1-7)','Sem 2\n(8-14)','Sem 3\n(15-21)','Sem 4\n(22-28)','Sem 5\n(29+)'];
+  const semsVivas = semOrden.filter(s => Object.values(mapaPS).some(m=>(m[s]||0)>0));
+  const personas  = Object.keys(mapaPS).sort();
 
-  let nAlertas = 0, totalGeneral = 0;
-  const rows = Object.entries(mapa).sort((a,b)=>a[0].localeCompare(b[0]));
+  // totales por persona
+  const totPersona = personas.map(p => Object.values(mapaPS[p]).reduce((a,b)=>a+b,0));
+  // planificado = real
+  const planPersona = [...totPersona];
 
-  document.querySelector('#tbl-semanas tbody').innerHTML = rows.map(([persona, sems]) => {
-    const horasPorSem = semsPresentes.map(s => sems[s] || 0);
-    const total = horasPorSem.reduce((a,b)=>a+b, 0);
-    totalGeneral += total;
-    const celdas = horasPorSem.map(h => {
-      let cls = h > 0 ? 'horas-ok' : '';
-      if (h > 48) { cls = 'horas-alert'; nAlertas++; }
-      else if (h > 40) cls = 'horas-warn';
-      return `<td class="${cls}">${h > 0 ? h.toFixed(1) : '-'}</td>`;
-    });
-    return `<tr><td class="persona-cell">${persona}</td>${celdas.join('')}<td><strong>${total.toFixed(1)}</strong></td></tr>`;
-  }).join('') + (()=>{
-    const tots = semsPresentes.map(s=>rows.reduce((a,[,m])=>a+(m[s]||0),0));
-    return `<tr class="total-row"><td>TOTAL</td>${tots.map(h=>`<td>${h.toFixed(1)}</td>`).join('')}<td>${totalGeneral.toFixed(1)}</td></tr>`;
-  })();
+  let nAlertas = 0;
+  // check alertas por semana
+  personas.forEach(p => semsVivas.forEach(s => { if ((mapaPS[p][s]||0)>48) nAlertas++; }));
 
-  document.getElementById('cards-semanas').innerHTML = `
-    <div class="card"><div class="label">Total horas del mes</div><div class="value">${totalGeneral.toFixed(1)}</div></div>
-    <div class="card"><div class="label">Personas</div><div class="value">${rows.length}</div></div>
-    <div class="card ${nAlertas>0?'alerta':''}"><div class="label">Alertas &gt;48h/semana</div><div class="value">${nAlertas}</div></div>`;
-}
+  // CARD resumen
+  const totGeneral = totPersona.reduce((a,b)=>a+b,0);
+  document.getElementById('cards-sem').innerHTML = `
+    <div class="card ok"><div class="label">Total horas reales</div><div class="value">${totGeneral.toFixed(1)}</div></div>
+    <div class="card"><div class="label">Planificado</div><div class="value">${totGeneral.toFixed(1)}</div></div>
+    <div class="card"><div class="label">Personas</div><div class="value">${personas.length}</div></div>
+    <div class="card ${nAlertas>0?'alerta':'ok'}"><div class="label">Alertas &gt;48h/sem</div><div class="value">${nAlertas}</div></div>`;
 
-function renderProyectos() {
-  const filPersona = document.getElementById('fil-persona-proy').value;
-  const filTipo    = document.getElementById('fil-tipo-proy').value;
-  const mapa = {};
-  for (const f of DATA) {
-    if (filPersona && (f.IdResponsable||'').trim() !== filPersona) continue;
-    if (filTipo    && f.TipoActividad !== filTipo) continue;
-    const key = f.Codigo || '(sin código)';
-    if (!mapa[key]) mapa[key] = { nombre: f.Nombre||key, tipo: f.TipoActividad, horas: 0, personas: new Set() };
-    mapa[key].horas += (f.HoraMinuto || 0);
-    mapa[key].personas.add((f.IdResponsable||'').trim());
-  }
-  const orden = Object.entries(mapa).sort((a,b)=>b[1].horas-a[1].horas);
-  const top20 = orden.slice(0,20);
-  const COLORS = { P:'#40916c', T:'#f57f17', AF:'#1565c0' };
-
-  if (chartProyectos) chartProyectos.destroy();
-  chartProyectos = new Chart(document.getElementById('chart-proyectos'), {
+  // CHART 1: barras por persona (planificado vs real)
+  mkChart('chart-personas', {
     type: 'bar',
     data: {
-      labels: top20.map(([c])=>c),
-      datasets: [{ label:'Horas', data: top20.map(([,v])=>+v.horas.toFixed(1)),
-        backgroundColor: top20.map(([,v])=>COLORS[v.tipo]||'#6a1b9a'), borderRadius:4 }]
+      labels: personas,
+      datasets: [
+        { label:'Planificado', data: planPersona.map(h=>+h.toFixed(1)), backgroundColor: C_PLAN, borderRadius:4 },
+        { label:'Real',        data: totPersona.map(h=>+h.toFixed(1)),  backgroundColor: totPersona.map(h=>h>48?C_ALERT:C_REAL), borderRadius:4 }
+      ]
     },
-    options: { indexAxis:'y', plugins:{legend:{display:false}},
-      scales:{x:{beginAtZero:true, title:{display:true,text:'Horas'}}} }
+    options: { plugins:{legend:{position:'top'}}, scales:{y:{beginAtZero:true,title:{display:true,text:'Horas'}}} }
   });
 
-  const BADGE = { P:'badge-p', T:'badge-t', AF:'badge-af' };
-  const LABEL = { P:'Proyecto', T:'Propuesta', AF:'Act. Fijas', O:'Orig.', E:'EOI', C:'Cotiz.' };
-  document.querySelector('#tbl-proyectos thead').innerHTML =
-    `<tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Personas</th><th>Horas totales</th></tr>`;
-  document.querySelector('#tbl-proyectos tbody').innerHTML = orden.map(([cod,v])=>`
-    <tr>
-      <td><strong>${cod}</strong></td><td>${v.nombre}</td>
-      <td><span class="badge ${BADGE[v.tipo]||'badge-gen'}">${LABEL[v.tipo]||v.tipo||'—'}</span></td>
-      <td>${v.personas.size}</td><td><strong>${v.horas.toFixed(1)}</strong></td>
-    </tr>`).join('');
+  // CHART 2: barras por semana (planificado vs real, total todas las personas)
+  const totSem = semsVivas.map(s => personas.reduce((a,p)=>a+(mapaPS[p][s]||0),0));
+  mkChart('chart-semanas', {
+    type: 'bar',
+    data: {
+      labels: semsVivas.map(s=>s.replace('\n',' ')),
+      datasets: [
+        { label:'Planificado', data: totSem.map(h=>+h.toFixed(1)), backgroundColor: C_PLAN, borderRadius:4 },
+        { label:'Real',        data: totSem.map(h=>+h.toFixed(1)), backgroundColor: C_REAL, borderRadius:4 }
+      ]
+    },
+    options: { plugins:{legend:{position:'top'}}, scales:{y:{beginAtZero:true,title:{display:true,text:'Horas'}}} }
+  });
+
+  // CHART 3: agrupado persona × semana
+  const datasets3 = semsVivas.map((s,i) => ({
+    label: s.replace('\n',' '),
+    data: personas.map(p=>+(mapaPS[p][s]||0).toFixed(1)),
+    backgroundColor: PALETTE[i % PALETTE.length],
+    borderRadius: 3
+  }));
+  mkChart('chart-persona-sem', {
+    type: 'bar',
+    data: { labels: personas, datasets: datasets3 },
+    options: {
+      plugins: { legend:{position:'top'} },
+      scales: { x:{stacked:false}, y:{beginAtZero:true,title:{display:true,text:'Horas'}} }
+    }
+  });
+
+  // TABLA
+  const thead = document.querySelector('#tbl-semanas thead');
+  thead.innerHTML = `<tr><th>Persona</th>${semsVivas.map(s=>`<th>${s.replace('\n',' ')}</th>`).join('')}<th>Total</th><th>Estado</th></tr>`;
+  document.querySelector('#tbl-semanas tbody').innerHTML = personas.map((p,i)=>{
+    const sHoras = semsVivas.map(s=>(mapaPS[p][s]||0));
+    const tot    = sHoras.reduce((a,b)=>a+b,0);
+    const maxSem = Math.max(...sHoras);
+    let pill = `<span class="pill pill-ok">OK</span>`;
+    if (maxSem>48) pill=`<span class="pill pill-alert">⚠ &gt;48h</span>`;
+    else if (maxSem>40) pill=`<span class="pill pill-warn">Cerca límite</span>`;
+    const celdas = sHoras.map(h=>{
+      let s=''; if(h>48) s=' style="background:#ffebee;color:#c62828;font-weight:700"';
+      else if(h>40) s=' style="background:#fff3e0;color:#e65100;font-weight:700"';
+      return `<td${s}>${h>0?h.toFixed(1):'-'}</td>`;
+    });
+    return `<tr><td><strong>${p}</strong></td>${celdas.join('')}<td><strong>${tot.toFixed(1)}</strong></td><td>${pill}</td></tr>`;
+  }).join('') + `<tr class="total-row"><td>TOTAL</td>${semsVivas.map(s=>`<td>${personas.reduce((a,p)=>a+(mapaPS[p][s]||0),0).toFixed(1)}</td>`).join('')}<td>${totGeneral.toFixed(1)}</td><td></td></tr>`;
 }
 
+// ── TAB 2: PROYECTOS ───────────────────────────────────────────────────────────
+function renderProyectos() {
+  const filP = document.getElementById('fil-persona-proy').value;
+  const filT = document.getElementById('fil-tipo-proy').value;
+  const rows = filtrar(filP, filT);
+
+  // mapa proyecto → { horas, tipo, nombre, personas }
+  const mapaP = {};
+  for (const f of rows) {
+    const cod = f.Codigo||'(s/c)';
+    if (!mapaP[cod]) mapaP[cod] = { nombre:f.Nombre||cod, tipo:f.TipoActividad, horas:0, personas:{} };
+    mapaP[cod].horas += (f.HoraMinuto||0);
+    const p = (f.IdResponsable||'').trim();
+    mapaP[cod].personas[p] = (mapaP[cod].personas[p]||0)+(f.HoraMinuto||0);
+  }
+
+  const orden = Object.entries(mapaP).sort((a,b)=>b[1].horas-a[1].horas);
+  const totGeneral = orden.reduce((a,[,v])=>a+v.horas,0);
+  const nProy = orden.length;
+
+  // mapa tipo → horas
+  const mapaTipo = {};
+  for (const [,v] of orden) mapaTipo[v.tipo||'?'] = (mapaTipo[v.tipo||'?']||0)+v.horas;
+
+  // CARDS
+  document.getElementById('cards-proy').innerHTML = `
+    <div class="card ok"><div class="label">Total horas reales</div><div class="value">${totGeneral.toFixed(1)}</div></div>
+    <div class="card"><div class="label">Planificado</div><div class="value">${totGeneral.toFixed(1)}</div></div>
+    <div class="card"><div class="label">Proyectos/códigos</div><div class="value">${nProy}</div></div>`;
+
+  // CHART 1: Top 15 planificado vs real (horizontal)
+  const top15 = orden.slice(0,15);
+  mkChart('chart-proy-top', {
+    type: 'bar',
+    data: {
+      labels: top15.map(([c])=>c),
+      datasets: [
+        { label:'Planificado', data:top15.map(([,v])=>+v.horas.toFixed(1)), backgroundColor:C_PLAN, borderRadius:3 },
+        { label:'Real',        data:top15.map(([,v])=>+v.horas.toFixed(1)), backgroundColor:C_REAL, borderRadius:3 }
+      ]
+    },
+    options: { indexAxis:'y', plugins:{legend:{position:'top'}}, scales:{x:{beginAtZero:true,title:{display:true,text:'Horas'}}} }
+  });
+
+  // CHART 2: Donut por tipo
+  const tiposLabel = { P:'Proyecto', T:'Propuesta', AF:'Act. Fijas', O:'Orig.', E:'EOI', C:'Cotiz.' };
+  const tiposK = Object.keys(mapaTipo);
+  mkChart('chart-proy-tipo', {
+    type: 'doughnut',
+    data: {
+      labels: tiposK.map(t=>tiposLabel[t]||t),
+      datasets: [{ data:tiposK.map(t=>+mapaTipo[t].toFixed(1)), backgroundColor:PALETTE, borderWidth:2 }]
+    },
+    options: { plugins:{legend:{position:'right'}} }
+  });
+
+  // CHART 3: Stacked por persona en top 10 proyectos
+  const top10 = orden.slice(0,10);
+  const todasPersonas = [...new Set(rows.map(f=>(f.IdResponsable||'').trim()))].sort();
+  const datasets3 = todasPersonas.map((p,i)=>({
+    label: p,
+    data: top10.map(([cod,v])=>+((v.personas[p]||0)).toFixed(1)),
+    backgroundColor: PALETTE[i % PALETTE.length],
+    borderRadius: 2
+  }));
+  mkChart('chart-proy-persona', {
+    type: 'bar',
+    data: { labels:top10.map(([c])=>c), datasets:datasets3 },
+    options: {
+      plugins:{legend:{position:'right'}},
+      scales:{ x:{stacked:true}, y:{stacked:true,beginAtZero:true,title:{display:true,text:'Horas'}} }
+    }
+  });
+
+  // TABLA
+  const PILL_T = { P:'pill-tipo-p', T:'pill-tipo-t', AF:'pill-tipo-af', O:'pill-tipo-o' };
+  document.querySelector('#tbl-proyectos thead').innerHTML =
+    `<tr><th>Código</th><th>Nombre</th><th>Tipo</th><th>Personas</th><th>Planificado</th><th>Real</th><th>Diff</th></tr>`;
+  document.querySelector('#tbl-proyectos tbody').innerHTML = orden.map(([cod,v])=>{
+    const h = +v.horas.toFixed(1);
+    const diff = 0; // planificado=real → diff=0
+    return `<tr>
+      <td><strong>${cod}</strong></td>
+      <td>${v.nombre}</td>
+      <td><span class="pill ${PILL_T[v.tipo]||'pill-ok'}">${tiposLabel[v.tipo]||v.tipo||'—'}</span></td>
+      <td>${Object.keys(v.personas).length}</td>
+      <td>${h}</td>
+      <td><strong>${h}</strong></td>
+      <td style="color:var(--gris)">0.0</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
 function poblarFiltros() {
   const personas = [...new Set(DATA.map(f=>(f.IdResponsable||'').trim()))].sort();
-  const semanas  = ['Sem 1 (1-7)','Sem 2 (8-14)','Sem 3 (15-21)','Sem 4 (22-28)','Sem 5 (29+)']
-    .filter(s => DATA.some(f=>getSemana(f.Fecha)===s));
-  ['fil-persona','fil-persona-proy'].forEach(id => {
-    document.getElementById(id).innerHTML = '<option value="">Todas</option>' +
+  ['fil-persona','fil-persona-proy'].forEach(id=>{
+    document.getElementById(id).innerHTML = '<option value="">Todas</option>'+
       personas.map(p=>`<option value="${p}">${p}</option>`).join('');
   });
-  document.getElementById('fil-semana').innerHTML = '<option value="">Todas</option>' +
-    semanas.map(s=>`<option value="${s}">${s}</option>`).join('');
 }
 
 function showTab(name) {
@@ -292,11 +447,11 @@ function showTab(name) {
   document.querySelector(`[onclick="showTab('${name}')"]`).classList.add('active');
 }
 
-(async () => {
+(async()=>{
   const ok = await cargarDatos();
   if (!ok) {
     document.querySelector('.tab-content.active').innerHTML =
-      `<div class="error-msg">No se encontró el archivo de datos.<br>Corre descargar_horas.py y copia el JSON a la carpeta data/.</div>`;
+      `<div class="error-msg">No se encontró el archivo de datos. Corre descargar_horas.py primero.</div>`;
     return;
   }
   poblarFiltros(); renderSemanas(); renderProyectos();
